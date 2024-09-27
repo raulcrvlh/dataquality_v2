@@ -32,3 +32,9 @@ class DataQuality:
         df_unicos= self.df.nunique().reset_index()
         df_unicos.columns = ["Coluna", "Quantidade"]
         print(tabulate(df_unicos, headers="keys", showindex="always", tablefmt="fancy_grid"))
+
+    def most_commom(self):
+        print("\nDados mais comuns:")
+        for col in self.df_cat.columns:
+            df_aux = self.df_cat[col].mode()
+            print(f"{col}: {df_aux[0]}")
