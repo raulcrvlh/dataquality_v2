@@ -20,3 +20,9 @@ class DataQuality:
         print("\nDataFrame Numérico:")
         num_df = self.df_num.head(n)
         print(tabulate(num_df, headers="keys", showindex="always", tablefmt="fancy_grid"))
+    
+    def count_nulls(self):
+        print("\nQuantidade de Nulos:")
+        df_nulos= self.df.isnull().sum().reset_index()
+        df_nulos.columns = ["Coluna", "Quantidade"]
+        print(tabulate(df_nulos, headers="keys", showindex="always", tablefmt="fancy_grid"))
