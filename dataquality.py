@@ -26,3 +26,9 @@ class DataQuality:
         df_nulos= self.df.isnull().sum().reset_index()
         df_nulos.columns = ["Coluna", "Quantidade"]
         print(tabulate(df_nulos, headers="keys", showindex="always", tablefmt="fancy_grid"))
+
+    def count_unique(self):
+        print("\nQuantidade de Dados Únicos:")
+        df_unicos= self.df.nunique().reset_index()
+        df_unicos.columns = ["Coluna", "Quantidade"]
+        print(tabulate(df_unicos, headers="keys", showindex="always", tablefmt="fancy_grid"))
