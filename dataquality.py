@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 from tabulate import tabulate
 
 class DataQuality:
@@ -10,42 +11,33 @@ class DataQuality:
         self.df_num = self.df.select_dtypes(include=np.number)
 
     def firts_rows(self, n=5):
-        print("DataFrame Completo:")
-        head_df = self.df.head(n)
-        print(tabulate(head_df, headers="keys", showindex="always", tablefmt="fancy_grid"))
-
-        print("\nDataFrame Categórico:")
-        categ_df = self.df_cat.head(n)
-        print(tabulate(categ_df, headers="keys", showindex="always", tablefmt="fancy_grid"))
-
-        print("\nDataFrame Numérico:")
-        num_df = self.df_num.head(n)
-        print(tabulate(num_df, headers="keys", showindex="always", tablefmt="fancy_grid"))
+        print(f"\n{n} primeiras linhas:")
+        head_df = self.df.head(n).reset_index()
+        print(tabulate(head_df, headers="keys", tablefmt="fancy_grid"))
     
     def last_rows(self, n=5):
-        print("\nDataFrame Completo:")
+        print(f"\n{n} últimas linhas:")
         tail_df = self.df.tail(n)
-        print(tabulate(tail_df, headers="keys", showindex="always", tablefmt="fancy_grid"))
+        print(tabulate(tail_df, headers="keys", tablefmt="fancy_grid"))
 
-        print("\nDataFrame Categórico:")
-        categ_df = self.df_cat.tail(n)
-        print(tabulate(categ_df, headers="keys", showindex="always", tablefmt="fancy_grid"))
-
-        print("\nDataFrame Numérico:")
-        num_df = self.df_num.tail(n)
-        print(tabulate(num_df, headers="keys", showindex="always", tablefmt="fancy_grid"))
+    def sample_rows(self, n=5):
+        print(f"\nAmostra de {n} linhas:")
+        sample_rows = self.df.sample(n)
+        print(tabulate(sample_rows, headers="keys", tablefmt="fancy_grid"))
 
     def count_nulls(self):
-        print("\nQuantidade de Nulos:")
+        print("\nQuantidade de dados nulos:")
         df_nulos= self.df.isnull().sum().reset_index()
         df_nulos.columns = ["Coluna", "Quantidade"]
-        print(tabulate(df_nulos, headers="keys", showindex="always", tablefmt="fancy_grid"))
+        print(f"Quantidade total de dados nulos: {df_nulos["Quantidade"].sum()}")
+        print(tabulate(df_nulos[df_nulos["Quantidade"] > 0], headers="keys", tablefmt="fancy_grid"))
 
     def count_unique(self):
-        print("\nQuantidade de Dados Únicos:")
+        print("\nQuantidade de dados únicos:")
         df_unicos= self.df.nunique().reset_index()
         df_unicos.columns = ["Coluna", "Quantidade"]
-        print(tabulate(df_unicos, headers="keys", showindex="always", tablefmt="fancy_grid"))
+        print(f"Quantidade total de dados únicos: {df_unicos["Quantidade"].sum()}")
+        print(tabulate(df_unicos, headers="keys", tablefmt="fancy_grid"))
 
     def most_commom(self):
         print("\nDados mais comuns:")
@@ -58,7 +50,7 @@ class DataQuality:
             print(f"\n{col} - Coluna Númerica")
             df_num_descbrie = self.df_num[col].describe().round(2).reset_index()
             print(tabulate(df_num_descbrie, headers="keys", tablefmt="fancy_grid"))
-            self.df_num[col].plot(subplots=True, kind='bar', figsize=(25,10), fontsize=5)
+            plt.hist(self.df_num[col])
             plt.show()
 
     def categorical_analyzes(self):
