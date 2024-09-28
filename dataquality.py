@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from tabulate import tabulate
 
 class DataQuality:
@@ -12,6 +13,13 @@ class DataQuality:
         print("DataFrame Completo:")
         head_df = self.df.head(n)
         print(tabulate(head_df, headers="keys", showindex="always", tablefmt="fancy_grid"))
+        # total_linhas = len(self.df)
+        # num_colunas = len(self.df.columns)
+        # total_nulos = self.df.isna().sum().reset_index()
+
+        # print(f"\nNúmero total de linhas: {total_linhas}")
+        # print(f"\nNúmero de colunas: {num_colunas}")
+        # print(f"\nTotal de dados nulos: {total_nulos}")
 
         print("\nDataFrame Categórico:")
         categ_df = self.df_cat.head(n)
@@ -38,3 +46,11 @@ class DataQuality:
         for col in self.df_cat.columns:
             df_aux = self.df_cat[col].mode()
             print(f"{col}: {df_aux[0]}")
+
+    def df_describe(self):
+        for col in self.df_num:
+            print(f"\n{col} - Coluna Númerica")
+            df_num_descbrie = self.df_num[col].describe().reset_index()
+            print(tabulate(df_num_descbrie, headers="keys", tablefmt="fancy_grid"))
+            self.df_num[col].plot(subplots=True, kind='bar', figsize=(25,10), fontsize=5)
+            plt.show()
