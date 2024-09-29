@@ -35,7 +35,7 @@ class DataQuality:
 
     def sample_rows(self, n=5):
         display_markdown(f'''### Amostra de {n} linhas:''', raw=True)
-        sample_rows = self.df.sample(n)
+        sample_rows = self.df.sample(n, random_state=np.random.seed(42))
         print(tabulate(sample_rows, headers="keys", tablefmt="fancy_grid"))
 
     def count_nulls(self):
