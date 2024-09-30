@@ -35,24 +35,34 @@ class DataQuality:
 
     def sample_rows(self, n=5):
         display_markdown(f'''### Amostra de {n} linhas:''', raw=True)
-        sample_rows = self.df.sample(n)
+        sample_df = self.df.sample(n, random_state=np.random.seed(42))
         print(tabulate(sample_rows, headers="keys", tablefmt="fancy_grid"))
 
     def count_nulls(self):
         display_markdown('''### Dados nulos''', raw=True)
-        df_nulos= self.df.isnull().sum().reset_index()
-        df_nulos.columns = ["Coluna", "Quantidade"]
-        display_markdown(f'''#### Quantidade total de dados nulos: {df_nulos["Quantidade"].sum()}''', raw=True)
-        print(tabulate(df_nulos[df_nulos["Quantidade"] > 0], headers="keys", tablefmt="fancy_grid"))
-        if df_nulos.empty:
+        nulls_df= self.df.isnull().sum().reset_index()
+        nulls_df.columns = ["Coluna", "Quantidade"]
+        total = nulls_df["Quantidade"].sum()
+        display_markdown(f'''#### Quantidade total de dados nulos: {total}''', raw=True)
+
+        nulls_df["Frequência (%)"] = (nulls_df["Quantidade"] / total).mul(100).round(2)
+        if nulls_df.empty:
             display_markdown(f'''- Não existem dados nulos no DataFrame.''', raw=True)
+        else:
+            print(tabulate(nulls_df[nulls_df["Quantidade"] > 0], headers="keys", tablefmt="fancy_grid"))
 
     def count_unique(self):
         display_markdown('''### Dados únicos''', raw=True)
-        df_unicos= self.df.nunique().reset_index()
-        df_unicos.columns = ["Coluna", "Quantidade"]
-        display_markdown(f'''#### Quantidade total de dados únicos: {df_unicos["Quantidade"].sum()}''', raw=True)
-        print(tabulate(df_unicos, headers="keys", tablefmt="fancy_grid"))
+        unique_df= self.df.nunique().reset_index()
+        unique_df.columns = ["Coluna", "Quantidade"]
+        total = unique_df["Quantidade"].sum()
+        display_markdown(f'''#### Quantidade total de dados únicos: {total}''', raw=True)
+
+        unique_df["Frequência (%)"] = (unique_df["Quantidade"] / total).mul(100).round(2)
+        if unique_df.empty:
+            display_markdown(f'''- Não existem dados únicos no DataFrame.''', raw=True)
+        else:
+            print(tabulate(unique_df[unique_df["Quantidade"] > 0], headers="keys", tablefmt="fancy_grid"))
 
     def most_commom(self):
         display_markdown('''### Dados mais comuns por coluna''', raw=True)
