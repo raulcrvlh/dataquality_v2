@@ -42,17 +42,28 @@ class DataQuality:
         display_markdown('''### Dados nulos''', raw=True)
         df_nulos= self.df.isnull().sum().reset_index()
         df_nulos.columns = ["Coluna", "Quantidade"]
-        display_markdown(f'''#### Quantidade total de dados nulos: {df_nulos["Quantidade"].sum()}''', raw=True)
-        print(tabulate(df_nulos[df_nulos["Quantidade"] > 0], headers="keys", tablefmt="fancy_grid"))
+        total = df_nulos["Quantidade"].sum()
+        display_markdown(f'''#### Quantidade total de dados nulos: {total}''', raw=True)
+
+        df_nulos["Frequência (%)"] = (df_nulos["Quantidade"] / total).mul(100).round(2)
         if df_nulos.empty:
             display_markdown(f'''- Não existem dados nulos no DataFrame.''', raw=True)
+        else:
+            print(tabulate(df_nulos[df_nulos["Quantidade"] > 0], headers="keys", tablefmt="fancy_grid"))
 
     def count_unique(self):
         display_markdown('''### Dados únicos''', raw=True)
         df_unicos= self.df.nunique().reset_index()
         df_unicos.columns = ["Coluna", "Quantidade"]
-        display_markdown(f'''#### Quantidade total de dados únicos: {df_unicos["Quantidade"].sum()}''', raw=True)
-        print(tabulate(df_unicos, headers="keys", tablefmt="fancy_grid"))
+        total = df_unicos["Quantidade"].sum()
+        display_markdown(f'''#### Quantidade total de dados únicos: {total}''', raw=True)
+
+        df_unicos["Frequência (%)"] = (df_unicos["Quantidade"] / total).mul(100).round(2)
+        if df_unicos.empty:
+            display_markdown(f'''- Não existem dados únicos no DataFrame.''', raw=True)
+        else:
+            print(tabulate(df_unicos[df_unicos["Quantidade"] > 0], headers="keys", tablefmt="fancy_grid"))
+
 
     def most_commom(self):
         display_markdown('''### Dados mais comuns por coluna''', raw=True)
